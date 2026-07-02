@@ -1,5 +1,6 @@
 import { HeartIcon } from '../icons/Icons';
 
+// Top page header with brand and tagline.
 export function Header() {
   return (
     <header className="header">

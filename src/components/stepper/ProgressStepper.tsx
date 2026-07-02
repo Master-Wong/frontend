@@ -12,6 +12,7 @@ interface ProgressStepperProps {
   currentStep: WizardStep;
 }
 
+// Render four-step donation progress indicator.
 export function ProgressStepper({ currentStep }: ProgressStepperProps) {
   return (
     <nav className="stepper" aria-label="Donation progress">

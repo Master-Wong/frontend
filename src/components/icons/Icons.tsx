@@ -71,3 +71,17 @@ export function CheckIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function ErrorCircleIcon({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" fill="currentColor" />
+      <path
+        d="M15 9L9 15M9 9l6 6"
+        stroke="#fff"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}

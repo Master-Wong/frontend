@@ -7,6 +7,7 @@ interface DonationSummaryProps {
   step: WizardStep;
 }
 
+// Display live donation summary in the wizard sidebar.
 export function DonationSummary({ form, step }: DonationSummaryProps) {
   const donorName = getDonorDisplayName(form.firstName, form.lastName);
   const showDonor = step >= 2 && donorName.length > 0;

@@ -1,25 +1,35 @@
 import type { DonationFormState } from '../../types/donation';
-import { CreditCardIcon, PhoneIcon } from '../icons/Icons';
+import { getPaymentFailureMessage } from '../../utils/format';
+import { CreditCardIcon, ErrorCircleIcon, PhoneIcon } from '../icons/Icons';
 
 interface PaymentStepProps {
   form: DonationFormState;
   errors: string[];
   isSubmitting: boolean;
+  isPolling: boolean;
   paymentError: string | null;
   onChange: (updates: Partial<DonationFormState>) => void;
   onBack: () => void;
   onSubmit: () => void;
+  onUseAnotherMethod: () => void;
+  onTryAgain: () => void;
 }
 
+// Render payment method selection, loading, and failure overlays.
 export function PaymentStep({
   form,
   errors,
   isSubmitting,
+  isPolling,
   paymentError,
   onChange,
   onBack,
   onSubmit,
+  onUseAnotherMethod,
+  onTryAgain,
 }: PaymentStepProps) {
+  const showFailureOverlay = Boolean(paymentError) && !isSubmitting && !isPolling;
+
   return (
     <section className="step-panel payment-step">
       <h2>Payment Method</h2>
@@ -30,7 +40,7 @@ export function PaymentStep({
           type="button"
           className={`payment-option ${form.paymentMethod === 'mpesa' ? 'selected' : ''}`}
           onClick={() => onChange({ paymentMethod: 'mpesa' })}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isPolling}
         >
           <span className="payment-option-icon" aria-hidden="true">
             <PhoneIcon />
@@ -41,12 +51,12 @@ export function PaymentStep({
           type="button"
           className={`payment-option ${form.paymentMethod === 'card' ? 'selected' : ''}`}
           onClick={() => onChange({ paymentMethod: 'card' })}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isPolling}
         >
           <span className="payment-option-icon" aria-hidden="true">
             <CreditCardIcon />
           </span>
-          Credit/Debit Card
+          Card
         </button>
       </div>
 
@@ -63,7 +73,7 @@ export function PaymentStep({
               value={form.phoneNumber}
               onChange={(event) => onChange({ phoneNumber: event.target.value })}
               placeholder="e.g. 0700 000 000 or 2547..."
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPolling}
             />
           </div>
         </div>
@@ -78,7 +88,7 @@ export function PaymentStep({
               value={form.cardNumber}
               onChange={(event) => onChange({ cardNumber: event.target.value })}
               placeholder="0000 0000 0000 0000"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPolling}
             />
           </div>
           <div className="field">
@@ -88,7 +98,7 @@ export function PaymentStep({
               value={form.nameOnCard}
               onChange={(event) => onChange({ nameOnCard: event.target.value })}
               placeholder="Jane Doe"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPolling}
             />
           </div>
           <div className="field-row">
@@ -99,7 +109,7 @@ export function PaymentStep({
                 value={form.expiry}
                 onChange={(event) => onChange({ expiry: event.target.value })}
                 placeholder="MM/YY"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isPolling}
               />
             </div>
             <div className="field">
@@ -109,33 +119,28 @@ export function PaymentStep({
                 value={form.cvc}
                 onChange={(event) => onChange({ cvc: event.target.value })}
                 placeholder="123"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isPolling}
               />
             </div>
           </div>
         </div>
       )}
 
-      {(errors.length > 0 || paymentError) && (
-        <div className="error-banner">
-          {paymentError && <p>{paymentError}</p>}
-          {errors.length > 0 && (
-            <ul className="error-list">
-              {errors.map((error) => <li key={error}>{error}</li>)}
-            </ul>
-          )}
-        </div>
+      {errors.length > 0 && (
+        <ul className="error-list">
+          {errors.map((error) => <li key={error}>{error}</li>)}
+        </ul>
       )}
 
       <div className="button-row">
-        <button type="button" className="btn btn-secondary" onClick={onBack} disabled={isSubmitting}>
+        <button type="button" className="btn btn-secondary" onClick={onBack} disabled={isSubmitting || isPolling}>
           Back
         </button>
         <button
           type="button"
           className="btn btn-primary"
           onClick={onSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isPolling}
         >
           {isSubmitting
             ? 'Processing...'
@@ -145,15 +150,43 @@ export function PaymentStep({
         </button>
       </div>
 
-      {isSubmitting && (
+      {(isSubmitting || isPolling) && (
         <div className="loading-overlay">
           <div className="spinner" aria-hidden="true" />
-          <h3>{form.paymentMethod === 'mpesa' ? 'Check your phone' : 'Processing payment'}</h3>
+          <h3>
+            {form.paymentMethod === 'mpesa'
+              ? isPolling
+                ? 'Waiting for confirmation on your phone…'
+                : 'Check your phone'
+              : 'Processing payment'}
+          </h3>
           <p>
             {form.paymentMethod === 'mpesa'
-              ? 'An M-Pesa prompt has been sent to your phone. Enter your PIN to complete the donation.'
+              ? isPolling
+                ? 'Enter your M-Pesa PIN to complete the donation. This may take a few seconds.'
+                : 'An M-Pesa prompt has been sent to your phone. Enter your PIN to complete the donation.'
               : 'Please wait while we process your card payment.'}
           </p>
+        </div>
+      )}
+
+      {showFailureOverlay && (
+        <div className="payment-failure-overlay" role="alertdialog" aria-labelledby="payment-failure-title">
+          <div className="payment-failure-content">
+            <span className="payment-failure-icon" aria-hidden="true">
+              <ErrorCircleIcon />
+            </span>
+            <h3 id="payment-failure-title">Payment unsuccessful</h3>
+            <p>{getPaymentFailureMessage(form.paymentMethod)}</p>
+            <div className="payment-failure-actions">
+              <button type="button" className="btn btn-secondary" onClick={onUseAnotherMethod}>
+                Use another method
+              </button>
+              <button type="button" className="btn btn-primary" onClick={onTryAgain}>
+                Try again
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>

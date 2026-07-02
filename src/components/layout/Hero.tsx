@@ -1,3 +1,4 @@
+// Hero section with donation page headline.
 export function Hero() {
   return (
     <section className="hero">

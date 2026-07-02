@@ -28,6 +28,7 @@ const securityItems = [
   },
 ];
 
+// Security assurances shown below the donation form.
 export function SecurityFooter() {
   return (
     <section className="security-footer">

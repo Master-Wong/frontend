@@ -5,6 +5,7 @@ const EXPIRY_REGEX = /^(0[1-9]|1[0-2])\/(\d{2})$/;
 const CVC_REGEX = /^\d{3,4}$/;
 
 function isValidExpiry(expiry: string): boolean {
+  // Check MM/YY expiry is valid and not in the past.
   const match = EXPIRY_REGEX.exec(expiry.trim());
   if (!match) return false;
 
@@ -15,6 +16,7 @@ function isValidExpiry(expiry: string): boolean {
 }
 
 function isValidPhone(phone: string): boolean {
+  // Validate Kenyan mobile numbers in local or 254 format.
   let digits = phone.replace(/\D/g, '');
   if (digits.startsWith('0') && digits.length === 10) {
     digits = `254${digits.slice(1)}`;
@@ -25,6 +27,7 @@ function isValidPhone(phone: string): boolean {
 }
 
 export function validateStep(step: WizardStep, form: DonationFormState): string[] {
+  // Validate wizard fields for the current step.
   const errors: string[] = [];
 
   if (step === 1) {

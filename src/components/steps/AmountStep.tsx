@@ -9,6 +9,7 @@ interface AmountStepProps {
   onContinue: () => void;
 }
 
+// Collect donation amount via presets or custom input.
 export function AmountStep({ form, errors, onChange, onContinue }: AmountStepProps) {
   return (
     <section className="step-panel">

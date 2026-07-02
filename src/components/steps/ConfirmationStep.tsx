@@ -8,6 +8,7 @@ interface ConfirmationStepProps {
   onReset: () => void;
 }
 
+// Show donation receipt or error after payment completes.
 export function ConfirmationStep({ receipt, receiptError, onReset }: ConfirmationStepProps) {
   if (receiptError) {
     return (
@@ -33,7 +34,9 @@ export function ConfirmationStep({ receipt, receiptError, onReset }: Confirmatio
     );
   }
 
-  const thankYouName = receipt.isAnonymous ? 'there' : receipt.donorName.split(' ')[0];
+  const thankYouName = receipt.isAnonymous
+    ? 'there'
+    : (receipt.donorName?.split(' ')[0] ?? 'there');
 
   return (
     <section className="step-panel confirmation-step">
@@ -64,7 +67,7 @@ export function ConfirmationStep({ receipt, receiptError, onReset }: Confirmatio
           </div>
           <div className="receipt-row">
             <dt>Donor Name</dt>
-            <dd>{receipt.donorName}</dd>
+            <dd>{receipt.donorName ?? 'Anonymous'}</dd>
           </div>
           <div className="receipt-row">
             <dt>Payment Method</dt>

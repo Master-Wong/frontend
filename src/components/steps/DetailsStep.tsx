@@ -8,6 +8,7 @@ interface DetailsStepProps {
   onContinue: () => void;
 }
 
+// Collect donor contact details and anonymity preference.
 export function DetailsStep({
   form,
   errors,

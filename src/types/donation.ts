@@ -1,4 +1,5 @@
 export type PaymentMethod = 'mpesa' | 'card';
+export type DonationStatus = 'pending' | 'completed' | 'failed';
 export type WizardStep = 1 | 2 | 3 | 4;
 
 export interface DonationFormState {
@@ -33,26 +34,35 @@ export interface DonationRequest {
 
 export interface DonationSubmitResponse {
   transactionId: string;
-  status: string;
+  status: DonationStatus;
   message: string;
   amount: number;
   paymentMethod: PaymentMethod;
   isAnonymous: boolean;
+  httpStatus: number;
 }
 
 export interface DonationReceipt {
   transactionId: string;
-  status: string;
-  donorName: string;
-  email: string;
+  status: DonationStatus;
+  donorName?: string;
+  email?: string;
   amount: number;
   paymentMethod: PaymentMethod;
   isAnonymous: boolean;
   createdAt: string;
+  updatedAt?: string;
+  message?: string;
+  failureMessage?: string;
 }
 
 export interface ApiErrorResponse {
   error: string;
   details?: string[];
   message?: string;
+}
+
+export interface PollOptions {
+  intervalMs?: number;
+  maxAttempts?: number;
 }

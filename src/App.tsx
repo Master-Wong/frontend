@@ -10,12 +10,14 @@ import { PaymentStep } from './components/steps/PaymentStep';
 import { ConfirmationStep } from './components/steps/ConfirmationStep';
 import { useDonationWizard } from './hooks/useDonationWizard';
 
+// Root donation wizard layout and step routing.
 function App() {
   const {
     step,
     form,
     errors,
     isSubmitting,
+    isPolling,
     paymentError,
     receipt,
     receiptError,
@@ -23,6 +25,8 @@ function App() {
     goToStep,
     goBack,
     submitPayment,
+    useAnotherPaymentMethod,
+    retryPayment,
     resetWizard,
   } = useDonationWizard();
 
@@ -60,10 +64,13 @@ function App() {
                   form={form}
                   errors={errors}
                   isSubmitting={isSubmitting}
+                  isPolling={isPolling}
                   paymentError={paymentError}
                   onChange={updateForm}
                   onBack={goBack}
                   onSubmit={submitPayment}
+                  onUseAnotherMethod={useAnotherPaymentMethod}
+                  onTryAgain={retryPayment}
                 />
               )}
               {step === 4 && (
