@@ -44,6 +44,7 @@ function buildRequest(form: DonationFormState): DonationRequest {
   };
 
   if (form.paymentMethod === 'mpesa') {
+    // Payment step phone wins; fall back to Details if they already entered it there.
     payload.phoneNumber = (form.phoneNumber.trim() || form.phone.trim());
   }
 
@@ -132,6 +133,7 @@ export function useDonationWizard() {
       setReceipt(receiptData);
       setReceiptError(null);
       setStep(4);
+    // 402/408 → failure overlay; 400 with details → inline list on the payment form.
     } catch (error) {
       if (error instanceof DonationApiError) {
         if (error.status === 402 || error.status === 408) {

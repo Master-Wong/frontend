@@ -35,6 +35,7 @@ export function PaymentStep({
   onDismissFailure,
 }: PaymentStepProps) {
   const headingRef = useStepFocus(step);
+  // Full-screen block while paymentError is set — Close clears it so Back works again.
   const showFailureOverlay = Boolean(paymentError) && !isSubmitting && !isPolling;
 
   const paymentOptionClass = (selected: boolean) =>

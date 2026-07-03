@@ -1,8 +1,8 @@
-# Donations Portal — Frontend
+# Donations Portal  Frontend
 
 A responsive single-page donation experience built with React, TypeScript,
-and Tailwind CSS. It guides a donor through a short wizard — amount, details,
-payment, confirmation — and reflects live loading, success, and error states
+and Tailwind CSS. It guides a donor through a short wizard - amount, details,
+payment, confirmation - and reflects live loading, success, and error states
 from the API.
 
 > See the [root README](../README.md) for the problem statement, architecture,
