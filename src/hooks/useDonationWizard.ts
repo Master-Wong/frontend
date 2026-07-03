@@ -166,6 +166,10 @@ export function useDonationWizard() {
     void submitPayment();
   }, [submitPayment]);
 
+  const dismissPaymentFailure = useCallback(() => {
+    setPaymentError(null);
+  }, []);
+
   const resetWizard = useCallback(() => {
     // Reset all wizard state for a new donation.
     idempotencyKeyRef.current = null;
@@ -194,6 +198,7 @@ export function useDonationWizard() {
     submitPayment,
     useAnotherPaymentMethod,
     retryPayment,
+    dismissPaymentFailure,
     resetWizard,
   };
 }

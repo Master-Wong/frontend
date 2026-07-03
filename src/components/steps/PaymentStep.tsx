@@ -1,6 +1,6 @@
 import type { DonationFormState } from '../../types/donation';
 import { useStepFocus } from '../../hooks/useStepFocus';
-import { getPaymentFailureMessage } from '../../utils/format';
+import { getPaymentFailureMessage, formatExpiryInput } from '../../utils/format';
 import { CreditCardIcon, ErrorCircleIcon, PhoneIcon } from '../icons/Icons';
 import { ValidationErrors } from '../ui/ValidationErrors';
 
@@ -16,6 +16,7 @@ interface PaymentStepProps {
   onSubmit: () => void;
   onUseAnotherMethod: () => void;
   onTryAgain: () => void;
+  onDismissFailure: () => void;
 }
 
 // Render payment method selection, loading, and failure overlays.
@@ -31,6 +32,7 @@ export function PaymentStep({
   onSubmit,
   onUseAnotherMethod,
   onTryAgain,
+  onDismissFailure,
 }: PaymentStepProps) {
   const headingRef = useStepFocus(step);
   const showFailureOverlay = Boolean(paymentError) && !isSubmitting && !isPolling;
@@ -132,8 +134,11 @@ export function PaymentStep({
                 id="expiry"
                 className="input-field"
                 value={form.expiry}
-                onChange={(event) => onChange({ expiry: event.target.value })}
+                onChange={(event) => onChange({ expiry: formatExpiryInput(event.target.value) })}
                 placeholder="MM/YY"
+                inputMode="numeric"
+                maxLength={5}
+                autoComplete="cc-exp"
                 disabled={isSubmitting || isPolling}
               />
             </div>
@@ -194,6 +199,14 @@ export function PaymentStep({
 
       {showFailureOverlay && (
         <div className="absolute inset-0 z-[11] flex items-center justify-center p-6 sm:p-8 bg-white/92 rounded-lg" role="alertdialog" aria-labelledby="payment-failure-title">
+          <button
+            type="button"
+            className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+            onClick={onDismissFailure}
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
           <div className="flex flex-col items-center text-center max-w-[22rem]">
             <span className="inline-flex text-red-600 mb-4 [&_svg]:w-12 [&_svg]:h-12" aria-hidden="true">
               <ErrorCircleIcon />
@@ -208,6 +221,13 @@ export function PaymentStep({
                 Try again
               </button>
             </div>
+            <button
+              type="button"
+              className="mt-4 text-sm text-gray-500 underline hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 rounded"
+              onClick={onDismissFailure}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

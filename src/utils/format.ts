@@ -24,6 +24,12 @@ export function getDonorDisplayName(firstName: string, lastName: string): string
   return `${firstName.trim()} ${lastName.trim()}`.trim();
 }
 
+export function formatExpiryInput(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 4);
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+}
+
 export function getPaymentFailureMessage(method: PaymentMethod): string {
   // Return user-facing failure copy for the selected payment method.
   if (method === 'mpesa') {

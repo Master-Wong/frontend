@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import { useState } from 'react';
 import { PaymentStep } from './PaymentStep';
 import { initialFormState } from '../../hooks/useDonationWizard';
 
@@ -11,6 +12,7 @@ const baseProps = {
   onSubmit: jest.fn(),
   onUseAnotherMethod: jest.fn(),
   onTryAgain: jest.fn(),
+  onDismissFailure: jest.fn(),
 };
 
 describe('PaymentStep', () => {
@@ -66,6 +68,73 @@ describe('PaymentStep', () => {
 
     expect(onTryAgain).toHaveBeenCalledTimes(1);
     expect(onUseAnotherMethod).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onDismissFailure when Close is clicked', () => {
+    const onDismissFailure = jest.fn();
+
+    render(
+      <PaymentStep
+        {...baseProps}
+        form={initialFormState}
+        errors={[]}
+        paymentError="Payment failed"
+        onDismissFailure={onDismissFailure}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+    expect(onDismissFailure).toHaveBeenCalledTimes(1);
+  });
+
+  it('allows Back after the failure overlay is dismissed', () => {
+    const onBack = jest.fn();
+
+    function Harness() {
+      const [paymentError, setPaymentError] = useState<string | null>('Payment failed');
+
+      return (
+        <PaymentStep
+          {...baseProps}
+          form={initialFormState}
+          errors={[]}
+          paymentError={paymentError}
+          onBack={onBack}
+          onDismissFailure={() => setPaymentError(null)}
+        />
+      );
+    }
+
+    render(<Harness />);
+
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('formats expiry input as MM/YY while typing', () => {
+    const onChange = jest.fn();
+
+    render(
+      <PaymentStep
+        {...baseProps}
+        form={{ ...initialFormState, paymentMethod: 'card' }}
+        errors={[]}
+        paymentError={null}
+        onChange={onChange}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText('Expiry (MM/YY)'), { target: { value: '1227' } });
+
+    expect(onChange).toHaveBeenCalledWith({ expiry: '12/27' });
   });
 
   it('renders validation errors with alert semantics', () => {

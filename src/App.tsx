@@ -26,6 +26,7 @@ function App() {
     submitPayment,
     useAnotherPaymentMethod,
     retryPayment,
+    dismissPaymentFailure,
     resetWizard,
   } = useDonationWizard();
 
@@ -73,6 +74,7 @@ function App() {
                   onSubmit={submitPayment}
                   onUseAnotherMethod={useAnotherPaymentMethod}
                   onTryAgain={retryPayment}
+                  onDismissFailure={dismissPaymentFailure}
                 />
               )}
               {step === 4 && (
