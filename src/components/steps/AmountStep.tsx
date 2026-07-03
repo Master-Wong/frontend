@@ -1,8 +1,11 @@
 import type { DonationFormState } from '../../types/donation';
 import { PRESET_AMOUNTS } from '../../hooks/useDonationWizard';
+import { useStepFocus } from '../../hooks/useStepFocus';
 import { formatAmount } from '../../utils/format';
+import { ValidationErrors } from '../ui/ValidationErrors';
 
 interface AmountStepProps {
+  step: number;
   form: DonationFormState;
   errors: string[];
   onChange: (updates: Partial<DonationFormState>) => void;
@@ -10,10 +13,14 @@ interface AmountStepProps {
 }
 
 // Collect donation amount via presets or custom input.
-export function AmountStep({ form, errors, onChange, onContinue }: AmountStepProps) {
+export function AmountStep({ step, form, errors, onChange, onContinue }: AmountStepProps) {
+  const headingRef = useStepFocus(step);
+
   return (
     <section>
-      <h2 className="m-0 mb-1.5 text-lg font-bold text-gray-900">Choose your donation amount</h2>
+      <h2 ref={headingRef} tabIndex={-1} className="m-0 mb-1.5 text-lg font-bold text-gray-900 outline-none">
+        Choose your donation amount
+      </h2>
       <p className="m-0 mb-6 text-sm text-gray-500">Your contribution helps us continue our mission.</p>
 
       <label className="field-label">Amount</label>
@@ -51,11 +58,7 @@ export function AmountStep({ form, errors, onChange, onContinue }: AmountStepPro
         }}
       />
 
-      {errors.length > 0 && (
-        <ul className="error-list">
-          {errors.map((error) => <li key={error}>{error}</li>)}
-        </ul>
-      )}
+      <ValidationErrors errors={errors} />
 
       <button type="button" className="btn-primary w-full mt-2" onClick={onContinue}>
         Continue

@@ -1,8 +1,11 @@
 import type { DonationFormState } from '../../types/donation';
+import { useStepFocus } from '../../hooks/useStepFocus';
 import { getPaymentFailureMessage } from '../../utils/format';
 import { CreditCardIcon, ErrorCircleIcon, PhoneIcon } from '../icons/Icons';
+import { ValidationErrors } from '../ui/ValidationErrors';
 
 interface PaymentStepProps {
+  step: number;
   form: DonationFormState;
   errors: string[];
   isSubmitting: boolean;
@@ -17,6 +20,7 @@ interface PaymentStepProps {
 
 // Render payment method selection, loading, and failure overlays.
 export function PaymentStep({
+  step,
   form,
   errors,
   isSubmitting,
@@ -28,10 +32,11 @@ export function PaymentStep({
   onUseAnotherMethod,
   onTryAgain,
 }: PaymentStepProps) {
+  const headingRef = useStepFocus(step);
   const showFailureOverlay = Boolean(paymentError) && !isSubmitting && !isPolling;
 
   const paymentOptionClass = (selected: boolean) =>
-    `flex flex-col items-center gap-2 py-[1.125rem] px-3 text-sm font-semibold font-sans border-[1.5px] rounded-xl cursor-pointer transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
+    `flex flex-col items-center gap-2 py-[1.125rem] px-3 text-sm font-semibold font-sans border-[1.5px] rounded-xl cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed ${
       selected
         ? 'border-green-500 bg-green-50 text-green-700 [&_.payment-icon]:text-green-600'
         : 'border-gray-200 bg-white text-gray-700 [&_.payment-icon]:text-gray-500'
@@ -39,15 +44,23 @@ export function PaymentStep({
 
   return (
     <section className="relative">
-      <h2 className="m-0 mb-1.5 text-lg font-bold text-gray-900">Payment Method</h2>
+      <h2
+        id="payment-method-heading"
+        ref={headingRef}
+        tabIndex={-1}
+        className="m-0 mb-1.5 text-lg font-bold text-gray-900 outline-none"
+      >
+        Payment Method
+      </h2>
       <p className="m-0 mb-6 text-sm text-gray-500">Choose how you&apos;d like to complete your donation.</p>
 
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-3 mb-6" role="radiogroup" aria-labelledby="payment-method-heading">
         <button
           type="button"
           className={paymentOptionClass(form.paymentMethod === 'mpesa')}
           onClick={() => onChange({ paymentMethod: 'mpesa' })}
           disabled={isSubmitting || isPolling}
+          aria-pressed={form.paymentMethod === 'mpesa'}
         >
           <span className="payment-icon inline-flex [&_svg]:w-6 [&_svg]:h-6" aria-hidden="true">
             <PhoneIcon />
@@ -59,6 +72,7 @@ export function PaymentStep({
           className={paymentOptionClass(form.paymentMethod === 'card')}
           onClick={() => onChange({ paymentMethod: 'card' })}
           disabled={isSubmitting || isPolling}
+          aria-pressed={form.paymentMethod === 'card'}
         >
           <span className="payment-icon inline-flex [&_svg]:w-6 [&_svg]:h-6" aria-hidden="true">
             <CreditCardIcon />
@@ -138,11 +152,7 @@ export function PaymentStep({
         </div>
       )}
 
-      {errors.length > 0 && (
-        <ul className="error-list">
-          {errors.map((error) => <li key={error}>{error}</li>)}
-        </ul>
-      )}
+      <ValidationErrors errors={errors} />
 
       <div className="flex gap-3 mt-6">
         <button type="button" className="btn-secondary min-w-24 shrink-0" onClick={onBack} disabled={isSubmitting || isPolling}>

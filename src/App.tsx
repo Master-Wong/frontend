@@ -43,6 +43,7 @@ function App() {
             <div className={`p-5 sm:p-7 md:px-8 ${step === 4 ? 'max-w-xl mx-auto' : ''}`}>
               {step === 1 && (
                 <AmountStep
+                  step={step}
                   form={form}
                   errors={errors}
                   onChange={updateForm}
@@ -51,6 +52,7 @@ function App() {
               )}
               {step === 2 && (
                 <DetailsStep
+                  step={step}
                   form={form}
                   errors={errors}
                   onChange={updateForm}
@@ -60,6 +62,7 @@ function App() {
               )}
               {step === 3 && (
                 <PaymentStep
+                  step={step}
                   form={form}
                   errors={errors}
                   isSubmitting={isSubmitting}
@@ -74,6 +77,7 @@ function App() {
               )}
               {step === 4 && (
                 <ConfirmationStep
+                  step={step}
                   receipt={receipt}
                   receiptError={receiptError}
                   onReset={resetWizard}

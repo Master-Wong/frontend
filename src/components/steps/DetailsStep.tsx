@@ -1,6 +1,9 @@
 import type { DonationFormState } from '../../types/donation';
+import { useStepFocus } from '../../hooks/useStepFocus';
+import { ValidationErrors } from '../ui/ValidationErrors';
 
 interface DetailsStepProps {
+  step: number;
   form: DonationFormState;
   errors: string[];
   onChange: (updates: Partial<DonationFormState>) => void;
@@ -10,15 +13,20 @@ interface DetailsStepProps {
 
 // Collect donor contact details and anonymity preference.
 export function DetailsStep({
+  step,
   form,
   errors,
   onChange,
   onBack,
   onContinue,
 }: DetailsStepProps) {
+  const headingRef = useStepFocus(step);
+
   return (
     <section>
-      <h2 className="m-0 mb-1.5 text-lg font-bold text-gray-900">Your Details</h2>
+      <h2 ref={headingRef} tabIndex={-1} className="m-0 mb-1.5 text-lg font-bold text-gray-900 outline-none">
+        Your Details
+      </h2>
       <p className="m-0 mb-6 text-sm text-gray-500">We&apos;ll use this to send your receipt.</p>
 
       <div className="grid grid-cols-1 min-[480px]:grid-cols-2 min-[480px]:gap-4">
@@ -90,11 +98,7 @@ export function DetailsStep({
         <span>Make my donation anonymous</span>
       </label>
 
-      {errors.length > 0 && (
-        <ul className="error-list">
-          {errors.map((error) => <li key={error}>{error}</li>)}
-        </ul>
-      )}
+      <ValidationErrors errors={errors} />
 
       <div className="flex gap-3 mt-6">
         <button type="button" className="btn-secondary min-w-24 shrink-0" onClick={onBack}>Back</button>

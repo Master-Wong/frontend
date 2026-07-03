@@ -1,19 +1,23 @@
 import type { DonationReceipt } from '../../types/donation';
+import { useStepFocus } from '../../hooks/useStepFocus';
 import { formatAmount, formatPaymentMethod, formatReceiptDate } from '../../utils/format';
 import { CheckIcon, HeartIcon } from '../icons/Icons';
 
 interface ConfirmationStepProps {
+  step: number;
   receipt: DonationReceipt | null;
   receiptError: string | null;
   onReset: () => void;
 }
 
 // Show donation receipt or error after payment completes.
-export function ConfirmationStep({ receipt, receiptError, onReset }: ConfirmationStepProps) {
+export function ConfirmationStep({ step, receipt, receiptError, onReset }: ConfirmationStepProps) {
+  const headingRef = useStepFocus(step);
+
   if (receiptError) {
     return (
       <section className="text-center">
-        <div className="p-3.5 px-4 bg-red-50 border border-red-300/30 rounded-lg mb-4">
+        <div className="p-3.5 px-4 bg-red-50 border border-red-300/30 rounded-lg mb-4" role="alert">
           <p className="m-0 text-sm text-red-600">{receiptError}</p>
         </div>
         <button type="button" className="btn-secondary w-full mt-2" onClick={onReset}>
@@ -44,7 +48,9 @@ export function ConfirmationStep({ receipt, receiptError, onReset }: Confirmatio
         <div className="inline-flex items-center justify-center w-14 h-14 bg-green-100 text-green-600 rounded-full mb-3 [&_svg]:w-6 [&_svg]:h-6" aria-hidden="true">
           <HeartIcon />
         </div>
-        <h2 className="m-0 mb-2 text-[1.375rem] font-bold text-gray-900">Thank you, {thankYouName}!</h2>
+        <h2 ref={headingRef} tabIndex={-1} className="m-0 mb-2 text-[1.375rem] font-bold text-gray-900 outline-none">
+          Thank you, {thankYouName}!
+        </h2>
         <p className="m-0 text-[0.9375rem] text-gray-500 leading-relaxed">
           Your generous contribution of{' '}
           <strong className="text-gray-800">{formatAmount(receipt.amount)}</strong> will make a real difference.
