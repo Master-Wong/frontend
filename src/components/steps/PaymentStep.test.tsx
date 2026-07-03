@@ -14,32 +14,36 @@ const baseProps = {
 };
 
 describe('PaymentStep', () => {
-  it('shows the failure overlay with M-Pesa message', () => {
+  const simulatedFailureMessage =
+    'The request was cancelled to simulate a failed payment response.';
+
+  it('shows the API failure message in the overlay when paymentError is set', () => {
     render(
       <PaymentStep
         {...baseProps}
         form={{ ...initialFormState, paymentMethod: 'mpesa' }}
         errors={[]}
-        paymentError="Payment failed"
+        paymentError={simulatedFailureMessage}
       />,
     );
 
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     expect(screen.getByText('Payment unsuccessful')).toBeInTheDocument();
-    expect(screen.getByText(/M-Pesa request was cancelled/)).toBeInTheDocument();
+    expect(screen.getByText(simulatedFailureMessage)).toBeInTheDocument();
   });
 
-  it('shows card-specific failure message when paying by card', () => {
+  it('shows a generic paymentError in the overlay when provided', () => {
     render(
       <PaymentStep
         {...baseProps}
-        form={{ ...initialFormState, paymentMethod: 'card' }}
+        form={{ ...initialFormState, paymentMethod: 'mpesa' }}
         errors={[]}
-        paymentError="Payment failed"
+        paymentError="Payment failed. Please try again."
       />,
     );
 
-    expect(screen.getByText(/card was declined/)).toBeInTheDocument();
+    expect(screen.getByText('Payment failed. Please try again.')).toBeInTheDocument();
+    expect(screen.queryByText(/M-Pesa request was cancelled/)).not.toBeInTheDocument();
   });
 
   it('calls retry and switch-method handlers from overlay buttons', () => {

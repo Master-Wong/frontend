@@ -199,7 +199,7 @@ export function PaymentStep({
               <ErrorCircleIcon />
             </span>
             <h3 id="payment-failure-title" className="m-0 mb-2.5 text-lg font-bold text-gray-900">Payment unsuccessful</h3>
-            <p className="m-0 mb-6 text-sm leading-relaxed text-gray-500">{getPaymentFailureMessage(form.paymentMethod)}</p>
+            <p className="m-0 mb-6 text-sm leading-relaxed text-gray-500">{paymentError ?? getPaymentFailureMessage(form.paymentMethod)}</p>
             <div className="flex gap-3 w-full">
               <button type="button" className="btn-secondary flex-1 min-w-0 px-4 py-3 text-sm" onClick={onUseAnotherMethod}>
                 Use another method
