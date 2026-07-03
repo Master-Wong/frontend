@@ -12,11 +12,11 @@ interface ConfirmationStepProps {
 export function ConfirmationStep({ receipt, receiptError, onReset }: ConfirmationStepProps) {
   if (receiptError) {
     return (
-      <section className="step-panel confirmation-step">
-        <div className="error-banner">
-          <p>{receiptError}</p>
+      <section className="text-center">
+        <div className="p-3.5 px-4 bg-red-50 border border-red-300/30 rounded-lg mb-4">
+          <p className="m-0 text-sm text-red-600">{receiptError}</p>
         </div>
-        <button type="button" className="btn btn-secondary btn-block" onClick={onReset}>
+        <button type="button" className="btn-secondary w-full mt-2" onClick={onReset}>
           Make another donation
         </button>
       </section>
@@ -25,10 +25,10 @@ export function ConfirmationStep({ receipt, receiptError, onReset }: Confirmatio
 
   if (!receipt) {
     return (
-      <section className="step-panel confirmation-step">
-        <div className="loading-overlay inline-loading">
+      <section className="text-center">
+        <div className="flex flex-col items-center justify-center text-center min-h-48">
           <div className="spinner" aria-hidden="true" />
-          <p>Loading your receipt...</p>
+          <p className="mt-4 text-sm text-gray-500">Loading your receipt...</p>
         </div>
       </section>
     );
@@ -39,48 +39,50 @@ export function ConfirmationStep({ receipt, receiptError, onReset }: Confirmatio
     : (receipt.donorName?.split(' ')[0] ?? 'there');
 
   return (
-    <section className="step-panel confirmation-step">
-      <div className="thank-you">
-        <div className="thank-you-icon" aria-hidden="true">
+    <section className="text-center">
+      <div className="mb-6">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-green-100 text-green-600 rounded-full mb-3 [&_svg]:w-6 [&_svg]:h-6" aria-hidden="true">
           <HeartIcon />
         </div>
-        <h2>Thank you, {thankYouName}!</h2>
-        <p>
+        <h2 className="m-0 mb-2 text-[1.375rem] font-bold text-gray-900">Thank you, {thankYouName}!</h2>
+        <p className="m-0 text-[0.9375rem] text-gray-500 leading-relaxed">
           Your generous contribution of{' '}
-          <strong>{formatAmount(receipt.amount)}</strong> will make a real difference.
+          <strong className="text-gray-800">{formatAmount(receipt.amount)}</strong> will make a real difference.
         </p>
       </div>
 
-      <article className="receipt-card">
-        <header>
-          <span aria-hidden="true"><CheckIcon /></span>
-          <h3>Donation Receipt</h3>
+      <article className="border border-gray-200 rounded-xl overflow-hidden mb-5 text-left">
+        <header className="flex items-center gap-2 px-4 py-3.5 bg-green-50 border-b border-green-100">
+          <span className="inline-flex items-center justify-center w-[1.375rem] h-[1.375rem] bg-green-500 text-white rounded-full [&_svg]:w-3 [&_svg]:h-3" aria-hidden="true">
+            <CheckIcon />
+          </span>
+          <h3 className="m-0 text-sm font-bold text-green-700">Donation Receipt</h3>
         </header>
-        <dl>
-          <div className="receipt-row">
-            <dt>Transaction Ref</dt>
-            <dd>{receipt.transactionId}</dd>
+        <dl className="m-0 py-1">
+          <div className="flex justify-between items-baseline px-4 py-2.5 text-sm">
+            <dt className="text-gray-500">Transaction Ref</dt>
+            <dd className="m-0 font-semibold text-gray-900 text-right">{receipt.transactionId}</dd>
           </div>
-          <div className="receipt-row">
-            <dt>Date</dt>
-            <dd>{formatReceiptDate(receipt.createdAt)}</dd>
+          <div className="flex justify-between items-baseline px-4 py-2.5 text-sm">
+            <dt className="text-gray-500">Date</dt>
+            <dd className="m-0 font-semibold text-gray-900 text-right">{formatReceiptDate(receipt.createdAt)}</dd>
           </div>
-          <div className="receipt-row">
-            <dt>Donor Name</dt>
-            <dd>{receipt.donorName ?? 'Anonymous'}</dd>
+          <div className="flex justify-between items-baseline px-4 py-2.5 text-sm">
+            <dt className="text-gray-500">Donor Name</dt>
+            <dd className="m-0 font-semibold text-gray-900 text-right">{receipt.donorName ?? 'Anonymous'}</dd>
           </div>
-          <div className="receipt-row">
-            <dt>Payment Method</dt>
-            <dd>{formatPaymentMethod(receipt.paymentMethod)}</dd>
+          <div className="flex justify-between items-baseline px-4 py-2.5 text-sm">
+            <dt className="text-gray-500">Payment Method</dt>
+            <dd className="m-0 font-semibold text-gray-900 text-right">{formatPaymentMethod(receipt.paymentMethod)}</dd>
           </div>
-          <div className="receipt-row total">
-            <dt>Total Amount</dt>
-            <dd>{formatAmount(receipt.amount)}</dd>
+          <div className="flex justify-between items-baseline px-4 py-3.5 mt-1 text-base border-t border-gray-200">
+            <dt className="text-gray-500">Total Amount</dt>
+            <dd className="m-0 font-bold text-green-700 text-right">{formatAmount(receipt.amount)}</dd>
           </div>
         </dl>
       </article>
 
-      <button type="button" className="btn btn-secondary btn-block" onClick={onReset}>
+      <button type="button" className="btn-secondary w-full mt-2" onClick={onReset}>
         Make another donation
       </button>
     </section>

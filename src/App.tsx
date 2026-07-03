@@ -1,4 +1,3 @@
-import './App.css';
 import { Header } from './components/layout/Header';
 import { Hero } from './components/layout/Hero';
 import { SecurityFooter } from './components/layout/SecurityFooter';
@@ -31,17 +30,17 @@ function App() {
   } = useDonationWizard();
 
   return (
-    <div className="app">
+    <div className="min-h-screen bg-gray-50 text-gray-800">
       <Header />
 
-      <main className="page-content">
+      <main className="max-w-[1060px] mx-auto px-4 pb-12">
         <Hero />
 
-        <section className="donation-card">
+        <section className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.06)] overflow-hidden">
           <ProgressStepper currentStep={step} />
 
-          <div className={`donation-content ${step === 4 ? 'confirmation-layout' : ''}`}>
-            <div className="form-column">
+          <div className={`grid grid-cols-1 ${step === 4 ? 'block' : 'md:grid-cols-[1fr_300px]'}`}>
+            <div className={`p-5 sm:p-7 md:px-8 ${step === 4 ? 'max-w-xl mx-auto' : ''}`}>
               {step === 1 && (
                 <AmountStep
                   form={form}

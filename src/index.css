@@ -1,20 +1,55 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-body {
-  margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #1f2937;
-  background: #f9fafb;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply m-0 min-h-screen font-sans text-base leading-normal text-gray-800 bg-gray-50 antialiased;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
 }
 
-#root {
-  min-height: 100vh;
+@layer components {
+  .input-field {
+    @apply w-full px-3.5 py-2.5 text-[0.9375rem] font-sans border border-gray-300 rounded-lg bg-white text-gray-800 placeholder:text-gray-400 transition-[border-color,box-shadow] focus:outline-none focus:border-green-500 focus:ring-[3px] focus:ring-green-500/10 disabled:bg-gray-100 disabled:cursor-not-allowed;
+  }
+
+  .textarea-field {
+    @apply w-full px-3.5 py-2.5 text-[0.9375rem] font-sans border border-gray-300 rounded-lg bg-white text-gray-800 placeholder:text-gray-400 transition-[border-color,box-shadow] focus:outline-none focus:border-green-500 focus:ring-[3px] focus:ring-green-500/10 disabled:bg-gray-100 disabled:cursor-not-allowed resize-y min-h-[5.5rem];
+  }
+
+  .field-label {
+    @apply block text-sm font-semibold text-gray-800 mb-2;
+  }
+
+  .field-group label {
+    @apply block text-sm font-semibold text-gray-800 mb-1.5;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 text-[0.9375rem] font-semibold font-sans rounded-lg border-0 cursor-pointer bg-green-500 text-white transition-colors hover:bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 text-[0.9375rem] font-semibold font-sans rounded-lg cursor-pointer bg-white text-gray-700 border border-gray-300 transition-colors hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  .error-list {
+    @apply my-3 pl-5 text-[0.8125rem] text-red-600 list-disc;
+  }
+
+  .spinner {
+    @apply w-10 h-10 border-[3px] border-gray-200 border-t-green-500 rounded-full animate-spin;
+  }
 }
