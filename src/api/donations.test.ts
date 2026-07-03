@@ -111,4 +111,44 @@ describe('donations api', () => {
     expect(receipt.transactionId).toBe('CARD-99');
     expect(fetch).toHaveBeenCalledWith('/api/donations/CARD-99');
   });
+
+  it('prefixes requests with VITE_API_BASE_URL when set', async () => {
+    const previousBaseUrl = process.env.VITE_API_BASE_URL;
+    process.env.VITE_API_BASE_URL = 'https://assessment-wx9c.onrender.com';
+
+    jest.resetModules();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({
+        transactionId: 'CARD-123',
+        status: 'completed',
+        message: 'Donation received successfully.',
+        amount: 1000,
+        paymentMethod: 'card',
+        isAnonymous: false,
+      }),
+    }) as jest.Mock;
+
+    const { submitDonation: submitWithBaseUrl } = await import('./donations');
+
+    await submitWithBaseUrl(
+      {
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        amount: 1000,
+        paymentMethod: 'card',
+        isAnonymous: false,
+      },
+      'test-idempotency-key',
+    );
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://assessment-wx9c.onrender.com/api/donations',
+      expect.any(Object),
+    );
+
+    process.env.VITE_API_BASE_URL = previousBaseUrl;
+    jest.resetModules();
+  });
 });

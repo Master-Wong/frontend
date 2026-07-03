@@ -1,0 +1,1 @@
+export const API_BASE = (process.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');

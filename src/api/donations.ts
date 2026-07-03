@@ -5,6 +5,7 @@ import type {
   DonationSubmitResponse,
   PollOptions,
 } from '../types/donation';
+import { API_BASE } from '../config/apiBase';
 
 export class DonationApiError extends Error {
   status: number;
@@ -40,7 +41,7 @@ export async function submitDonation(
   idempotencyKey: string,
 ): Promise<DonationSubmitResponse> {
   // POST donation with idempotency key header.
-  const response = await fetch('/api/donations', {
+  const response = await fetch(`${API_BASE}/api/donations`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +60,9 @@ export async function submitDonation(
 
 export async function fetchDonation(transactionId: string): Promise<DonationReceipt> {
   // GET current donation status by transaction id.
-  const response = await fetch(`/api/donations/${encodeURIComponent(transactionId)}`);
+  const response = await fetch(
+    `${API_BASE}/api/donations/${encodeURIComponent(transactionId)}`,
+  );
 
   if (!response.ok) {
     throw await parseError(response);
